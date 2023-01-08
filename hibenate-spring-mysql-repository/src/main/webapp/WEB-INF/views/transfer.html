@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="head::head"></head>
+<body>
+    <div class="container">
+<!-- --------------------------------------------TITLE 1------------------------------------------- -->
+        <div class="container-fluid background-title">
+            <div class="row">
+                <div class="col-10 title">Transfer money Information</div>
+                <a href="/" class="btn btn-outline-info col-2 btn-title">
+                   <i class="fa fa-list" aria-hidden="true"></i> Customer List
+                </a>
+            </div>
+        </div>
+        <form th:action="${'/transfer/'+sender.getId()+'/action'}" method="post" th:object="${sender}">
+            <div class="row">
+                <div class="col-3">
+                    <label>Sender ID</label>
+                    <br>
+                    <input class="form-control" th:field="*{id}" disabled>
+                </div>
+                <div class="col-3">
+                    <label>Sender Name</label>
+                    <br>
+                    <input class="form-control" th:field="*{fullName}" disabled>
+                </div>
+                <div class="col-3">
+                    <label>Email</label>
+                    <br>
+                    <input class="form-control" th:field="*{email}" disabled>
+                </div>
+                <div class="col-3">
+                    <label>Sender Balance</label>
+                    <br>
+                    <input class="form-control" th:field="*{balance}" disabled>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <label>Recipent Name</label>
+                    <br>
+                    <select class="form-select" id="recipient">
+                        <option value="" selected disabled>==Select Recipient==</option>
+                        <option th:each="recipient:${recipients}"
+                                th:if="${recipient.getId()}!=*{id}"
+                                th:value="${recipient.getId()}"
+                                th:text="${recipient.getFullName()}">
+                        </option>
+                    </select>
+                </div>
+                <div class="col-3" th:object="${transfer}">
+                    <label>Transfer Amount $</label>
+                    <br>
+                    <input class="form-control" th:field="*{transactionAmount}">
+                </div>
+                <div class="col-3">
+                    <label>Fee (%)</label>
+                    <br>
+                    <input class="form-control" name="fee" disabled value="10%">
+                </div>
+                <div class="col-3" th:object="${transfer}">
+                    <label>Total amount transaction ($)</label>
+                    <br>
+                    <input class="form-control" th:field="*{transferAmount}" disabled>
+                </div>
+                <input id="recipientId" type="hidden" name="recipientId" value="0">
+            </div>
+            <br>
+            <div class="col-6">
+                <button type="submit" class="btn btn-outline-info col-3 btn-title create-customer" style="color: blue; border-color: blue;">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i> Transfers
+             </button>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.querySelector("#recipient").addEventListener("change", (e)=>{
+            let result = document.getElementById("recipient").value;
+            document.getElementById("recipientId").value = result;
+        })
+        let input = document.getElementsByTagName("input");
+        let regex = /^[1-9]([0-9]){0,11}$/;
+        let inputMoney = document.getElementById("transactionAmount").value;
+        function checkRegex(){
+            let inputMoney = document.getElementById("transactionAmount").value;
+            return regex.exec(inputMoney);
+        }
+        function showError(){
+            
+        }
+        document.querySelector("form").addEventListener("submit", (e)=>{
+            if()
+            if(document.getElementById("recipientId").value==0 ){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Recipient is null',
+                    text: '',
+                    footer: ''
+                })
+                e.preventDefault();
+                return;
+            }
+            for(let i=0; i<input.length-1; i++){
+                if(input[i].value=="" || input[i].value==null) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Withdraw is null',
+                        text: '',
+                        footer: ''
+                    })
+                    e.preventDefault();
+                    return;
+                }
+            }
+            if(checkRegex()===null){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Withdraw money is valid',
+                    text: 'Withdraw money must start at number that is more than 0',
+                    footer: 'Withdraw money must be less than 999999999999 and more than 0'
+                })
+                e.preventDefault();
+            }
+        })
+    </script>
+</body>
+</html>
